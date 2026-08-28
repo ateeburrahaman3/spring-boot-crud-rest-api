@@ -2,9 +2,9 @@ package com.ateeburrahaman.spring_boot_crud_rest_api.service;
 
 import com.ateeburrahaman.spring_boot_crud_rest_api.entity.Student;
 import com.ateeburrahaman.spring_boot_crud_rest_api.repository.StudentRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class StudentService {
 
     private StudentRepository studentRepository;
@@ -14,8 +14,8 @@ public class StudentService {
 
     public Student createStudent(Student student) {
         System.out.println("Inside StudentService");
-        Student student1 = studentRepository.createStudent(student);
+        Student savedStudent = studentRepository.save(student);
         System.out.println("Leaving StudentService");
-        return student1;
+        return savedStudent;
     }
 }

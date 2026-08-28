@@ -20,15 +20,10 @@ public class StudentController {
 
     @PostMapping("/create")
     public ResponseEntity<Student> create(@RequestBody Student student) {
-        System.out.println("Inside StudentController");
-        System.out.println(student.getName());
-        System.out.println(student.getBranch());
-        System.out.println(student.getEmail());
 
+        Student savedStudent = studentService.createStudent(student);
 
-        Student student1 = studentService.createStudent(student);
-        System.out.println("Leaving StudentController");
-        return ResponseEntity.status(HttpStatus.CREATED).body(student1);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
     }
 
     @PostMapping("/update")

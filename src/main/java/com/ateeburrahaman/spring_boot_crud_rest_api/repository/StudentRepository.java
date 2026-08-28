@@ -1,14 +1,10 @@
 package com.ateeburrahaman.spring_boot_crud_rest_api.repository;
 
 import com.ateeburrahaman.spring_boot_crud_rest_api.entity.Student;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@Component
-public class StudentRepository {
-    public Student createStudent(Student student) {
-        System.out.println("Inside Repository");
-        System.out.println("created Student");
-        System.out.println("Leaving StudentRepository");
-        return student;
-    }
+@Repository
+public interface StudentRepository extends JpaRepository<Student, Integer> {
+
 }
