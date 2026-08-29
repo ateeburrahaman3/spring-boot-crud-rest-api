@@ -4,16 +4,15 @@ import com.ateeburrahaman.spring_boot_crud_rest_api.entity.Student;
 import com.ateeburrahaman.spring_boot_crud_rest_api.service.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/students")
 public class StudentController {
 
-    private StudentService studentService;
+    private final StudentService studentService;
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
@@ -26,20 +25,50 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
     }
 
-    @PostMapping("/update")
-    public String update(){
-        return "updated";
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable int id) {
+        boolean deletedStudent = studentService.deleteStudent(id);
+        if (!deletedStudent) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Student deleted successfully");
+
     }
 
-    @PostMapping("/delete")
-    public String delete(){
-        return "deleted";
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Student> getById(@PathVariable int id)
+    {
+        Student student = studentService.getById(id);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(student);
     }
 
-    @PostMapping("/find")
-    public String find(){
-        return "found";
+    @GetMapping("/getAll")
+    public ResponseEntity<List<Student>> getAll()
+    {
+        List<Student> studentList = studentService.getAll();
+        if (studentList == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(studentList);
+
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Student> update(@PathVariable int id,@RequestBody Student student) {
+
+        Student updatedStudent = studentService.updateStudent(id,student);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedStudent);
+    }
+
+
+
 
 
 
