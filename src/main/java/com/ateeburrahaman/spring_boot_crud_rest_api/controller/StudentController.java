@@ -25,8 +25,8 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> delete(@RequestParam Integer id) {
         boolean deletedStudent = studentService.deleteStudent(id);
         if (!deletedStudent) {
             return ResponseEntity.notFound().build();
@@ -35,8 +35,17 @@ public class StudentController {
 
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Student> getById(@PathVariable int id)
+    @PatchMapping("/soft-delete")
+    public ResponseEntity<String> deleteSoft(@RequestParam Integer id) {
+        boolean deletedStudent = studentService.softDeleteStudent(id);
+        if (!deletedStudent) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Soft deleted Student successfully");
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<Student> getById(@RequestParam Integer id)
     {
         Student student = studentService.getById(id);
         if (student == null) {
@@ -56,11 +65,11 @@ public class StudentController {
 
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Student> update(@PathVariable int id,@RequestBody Student student) {
+    @PutMapping("/update")
+    public ResponseEntity<Student> update(@RequestParam Integer id,@RequestBody Student student) {
 
         Student updatedStudent = studentService.updateStudent(id,student);
-        if (student == null) {
+        if (updatedStudent == null) {
             return ResponseEntity.notFound().build();
         }
 

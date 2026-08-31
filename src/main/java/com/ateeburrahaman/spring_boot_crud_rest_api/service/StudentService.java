@@ -9,43 +9,64 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class StudentService {
+public class StudentService
+{
 
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
 
 
-    public Student createStudent(Student student) {
-        Student savedStudent = studentRepository.save(student);
-        return savedStudent;
+    public Student createStudent(Student student)
+    {
+        int rollNo = student.getRollNo();
+        while(studentRepository.existsByRollNo(rollNo)){
+            rollNo++;
+        }
+        student.setRollNo(rollNo);
+        student.setDeleted(false);
+        return studentRepository.save(student);
     }
 
-    public boolean deleteStudent(int id) {
-        boolean isDeleted = studentRepository.existsById(id);
-        if (!isDeleted)
-        {return false;}
+    public boolean deleteStudent(int id)
+    {
+        Optional<Student> studentExists =  studentRepository.findById(id);
+        if (studentExists.isEmpty()) {return false;}
         studentRepository.deleteById(id);
         return true;
     }
 
+    public boolean softDeleteStudent(int id)
+    {
+        Optional<Student> studentExists = studentRepository.getByIdAndDeletedFalse(id);
+        if (studentExists.isEmpty()) {return false;}
+        Student studentToDelete = studentExists.get();
+        studentToDelete.setDeleted(true);
+        studentRepository.save(studentToDelete);
+        return true;
+    }
+
+
     public Student getById(int id)
     {
-        Optional<Student> student = studentRepository.findById(id);
+        Optional<Student> student = studentRepository.getByIdAndDeletedFalse(id);
         return student.orElse(null);
     }
 
+
+
     public List<Student> getAll()
     {
-        List<Student> studentList = studentRepository.findAll();
+        List<Student> studentList = studentRepository.findAllByDeletedFalse();
         return studentList.stream()
                 .sorted(Comparator.comparing(Student::getRollNo))
                 .toList();
     }
 
-    public Student updateStudent(int id,Student student) {
-        Optional<Student> studentExists = studentRepository.findById(id);
+    public Student updateStudent(int id,Student student)
+    {
+        Optional<Student> studentExists = studentRepository.getByIdAndDeletedFalse(id);
         if (studentExists.isEmpty())
         {return null;}
 
@@ -58,3 +79,4 @@ public class StudentService {
         return studentRepository.save(updateStudent);
     }
 }
+
