@@ -19,7 +19,7 @@ warning: in the working copy of 'src/main/java/com/ateeburrahaman/spring_boot_cr
 [36m@@ -1,5 +1,8 @@[m
  package com.ateeburrahaman.spring_boot_crud_rest_api.controller;[m
  [m
-[32m+[m[32mimport com.ateeburrahaman.spring_boot_crud_rest_api.dto.StudentResponseDto;[m
+[32m+[m[32mimport com.ateeburrahaman.spring_boot_crud_rest_api.dto.responseDto.StudentResponseDto;[m
 [32m+[m[32mimport com.ateeburrahaman.spring_boot_crud_rest_api.dto.requestDto.CreateRequestDto;[m
 [32m+[m[32mimport com.ateeburrahaman.spring_boot_crud_rest_api.dto.requestDto.UpdateRequestDto;[m
  import com.ateeburrahaman.spring_boot_crud_rest_api.entity.Student;[m

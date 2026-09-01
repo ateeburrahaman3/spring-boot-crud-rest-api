@@ -10,9 +10,7 @@ import java.util.Optional;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Integer> {
 
-    List<Student> findAllByDeletedFalse();
+    Optional<List<Student>> findAllByDeletedFalse();
 
     Optional<Student> getByIdAndDeletedFalse(Integer id);
-
-    boolean existsByRollNo(int rollNo);
 }

@@ -1,16 +1,15 @@
 package com.ateeburrahaman.spring_boot_crud_rest_api.service;
 
-import com.ateeburrahaman.spring_boot_crud_rest_api.dto.StudentResponseDto;
+import com.ateeburrahaman.spring_boot_crud_rest_api.dto.responseDto.StudentResponseDto;
 import com.ateeburrahaman.spring_boot_crud_rest_api.dto.requestDto.CreateRequestDto;
 import com.ateeburrahaman.spring_boot_crud_rest_api.dto.requestDto.UpdateRequestDto;
 import com.ateeburrahaman.spring_boot_crud_rest_api.entity.Student;
+import com.ateeburrahaman.spring_boot_crud_rest_api.exception.ResourceNotFoundException;
 import com.ateeburrahaman.spring_boot_crud_rest_api.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,53 +28,58 @@ public class StudentService
         return studentToStudentResp(studentRepository.save(student));
     }
 
-    public boolean deleteStudent(int id)
+    public void deleteStudent(int id)
     {
-        Optional<Student> studentExists =  studentRepository.findById(id);
-        if (studentExists.isEmpty()) {return false;}
+        studentRepository
+                .getByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student With ID :"+id+" Not Found..."));
+
         studentRepository.deleteById(id);
-        return true;
     }
 
-    public boolean softDeleteStudent(int id)
+    public void softDeleteStudent(int id)
     {
-        Optional<Student> studentExists = studentRepository.getByIdAndDeletedFalse(id);
-        if (studentExists.isEmpty()) {return false;}
-        Student studentToDelete = studentExists.get();
+        Student studentToDelete = studentRepository
+                .getByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student With ID :"+id+" Not Found..."));
+
         studentToDelete.setDeleted(true);
         studentRepository.save(studentToDelete);
-        return true;
     }
 
 
     public StudentResponseDto getById(int id)
     {
-        Optional<Student> student = studentRepository.getByIdAndDeletedFalse(id);
-        return student.map(this::studentToStudentResp).orElse(null);
+        Student student = studentRepository
+                .getByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student With ID :"+id+" Not Found..."));
+
+        return studentToStudentResp(student);
     }
 
 
 
     public List<StudentResponseDto> getAll()
     {
-        List<Student> studentList = studentRepository.findAllByDeletedFalse();
-        if (studentList.isEmpty()) {return null;}
+        List<Student> studentList = studentRepository
+                .findAllByDeletedFalse()
+                .orElseThrow(() -> new ResourceNotFoundException("Student List is Empty..."));
+
         return studentList.stream().map(this::studentToStudentResp)
                 .collect(Collectors.toList());
     }
 
     public StudentResponseDto updateStudent(int id, UpdateRequestDto studentReq)
     {
-        Optional<Student> studentExists = studentRepository.getByIdAndDeletedFalse(id);
-        if (studentExists.isEmpty())
-        {return null;}
+        Student studentToUpdate = studentRepository
+                .getByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student With ID :"+id+" Not Found..."));
 
-        Student updateStudent = studentExists.get();
-        updateStudent.setName(studentReq.getName());
-        updateStudent.setRollNo(studentReq.getRollNo());
-        updateStudent.setBranch(studentReq.getBranch());
-        updateStudent.setGender(studentReq.getGender());
-        return studentToStudentResp(studentRepository.save(updateStudent));
+        studentToUpdate.setName(studentReq.getName());
+        studentToUpdate.setRollNo(studentReq.getRollNo());
+        studentToUpdate.setBranch(studentReq.getBranch());
+        studentToUpdate.setGender(studentReq.getGender());
+        return studentToStudentResp(studentRepository.save(studentToUpdate));
     }
 
 
@@ -88,11 +92,7 @@ public class StudentService
         student.setEmail(studentReq.getEmail());
         student.setBranch(studentReq.getBranch());
         student.setGender(studentReq.getGender());
-        Integer rollNo = studentReq.getRollNo();
-        while(studentRepository.existsByRollNo(rollNo)){
-            rollNo++;
-        }
-        student.setRollNo(rollNo);
+        student.setRollNo(studentReq.getRollNo());
         student.setDeleted(false);
         student.setCreatedAt(LocalDateTime.now());
         student.setUpdatedAt(LocalDateTime.now());

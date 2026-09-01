@@ -1,4 +1,4 @@
-package com.ateeburrahaman.spring_boot_crud_rest_api.dto;
+package com.ateeburrahaman.spring_boot_crud_rest_api.dto.responseDto;
 
 public class StudentResponseDto {
     private Integer id;

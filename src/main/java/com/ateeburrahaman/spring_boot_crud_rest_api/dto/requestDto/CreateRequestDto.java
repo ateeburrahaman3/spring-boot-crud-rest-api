@@ -1,10 +1,20 @@
 package com.ateeburrahaman.spring_boot_crud_rest_api.dto.requestDto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class CreateRequestDto {
+    @NotBlank(message = "Name Must Not Be Empty or Only Spaces or Null")
     private String name;
+    @Email(message = "Please Enter Correct Email")
+    @NotBlank(message = "Email Must Not Be Empty or Only Spaces or Null")
     private String email;
+    @NotNull(message = "Roll Number Must Not Be Null")
     private Integer rollNo;
+    @NotBlank(message = "Gender Must Not Be Empty or Only Spaces or Null")
     private String gender;
+    @NotBlank(message = "Branch Must Not Be Empty or Only Spaces or Null")
     private String branch;
 
     public CreateRequestDto(String name, String email, Integer rollNo, String branch, String gender) {
