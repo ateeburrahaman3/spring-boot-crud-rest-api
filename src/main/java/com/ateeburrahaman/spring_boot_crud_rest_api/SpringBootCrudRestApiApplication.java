@@ -10,7 +10,7 @@ public class SpringBootCrudRestApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootCrudRestApiApplication.class, args);
 
-		System.out.println("Hello World");
+		System.out.println("Application Started....");
 	}
 
 

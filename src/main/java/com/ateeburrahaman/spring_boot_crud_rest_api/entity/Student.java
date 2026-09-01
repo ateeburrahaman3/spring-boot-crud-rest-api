@@ -5,6 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 public class Student {
 
@@ -13,22 +16,50 @@ public class Student {
     private Integer id;
     private String name;
     private String email;
-    private int rollNo;
+    private Integer rollNo;
     private String gender;
     private String branch;
 
     private Boolean deleted;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public Student(Integer id, String name, String email, int rollNo,
-                   String gender, String branch, Boolean deleted) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
+    public Student(Integer rollNo, String name,
+                   Integer id, String email, String gender,
+                   String branch, LocalDateTime createdAt,
+                   Boolean deleted, LocalDateTime updatedAt) {
         this.rollNo = rollNo;
+        this.name = name;
+        this.id = id;
+        this.email = email;
         this.gender = gender;
         this.branch = branch;
+        this.createdAt = createdAt;
         this.deleted = deleted;
+        this.updatedAt = updatedAt;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+
 
     public Student() {
 
@@ -59,11 +90,11 @@ public class Student {
         this.gender = gender;
     }
 
-    public int getRollNo() {
+    public Integer getRollNo() {
         return rollNo;
     }
 
-    public void setRollNo(int rollNo) {
+    public void setRollNo(Integer rollNo) {
         this.rollNo = rollNo;
     }
 

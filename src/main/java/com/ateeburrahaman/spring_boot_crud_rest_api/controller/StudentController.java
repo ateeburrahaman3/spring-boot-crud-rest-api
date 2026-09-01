@@ -1,5 +1,8 @@
 package com.ateeburrahaman.spring_boot_crud_rest_api.controller;
 
+import com.ateeburrahaman.spring_boot_crud_rest_api.dto.StudentResponseDto;
+import com.ateeburrahaman.spring_boot_crud_rest_api.dto.requestDto.CreateRequestDto;
+import com.ateeburrahaman.spring_boot_crud_rest_api.dto.requestDto.UpdateRequestDto;
 import com.ateeburrahaman.spring_boot_crud_rest_api.entity.Student;
 import com.ateeburrahaman.spring_boot_crud_rest_api.service.StudentService;
 import org.springframework.http.HttpStatus;
@@ -18,9 +21,10 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Student> create(@RequestBody Student student) {
+    public ResponseEntity<StudentResponseDto> create(@RequestBody CreateRequestDto studentReq) {
 
-        Student savedStudent = studentService.createStudent(student);
+
+        StudentResponseDto savedStudent = studentService.createStudent(studentReq);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
     }
@@ -45,19 +49,19 @@ public class StudentController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Student> getById(@RequestParam Integer id)
+    public ResponseEntity<StudentResponseDto> getById(@RequestParam Integer id)
     {
-        Student student = studentService.getById(id);
-        if (student == null) {
+        StudentResponseDto studentResp = studentService.getById(id);
+        if (studentResp == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(student);
+        return ResponseEntity.ok(studentResp);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Student>> getAll()
+    public ResponseEntity<List<StudentResponseDto>> getAll()
     {
-        List<Student> studentList = studentService.getAll();
+        List<StudentResponseDto> studentList = studentService.getAll();
         if (studentList == null) {
             return ResponseEntity.notFound().build();
         }
@@ -66,14 +70,14 @@ public class StudentController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Student> update(@RequestParam Integer id,@RequestBody Student student) {
+    public ResponseEntity<StudentResponseDto> update(@RequestParam Integer id,@RequestBody UpdateRequestDto studentReq) {
 
-        Student updatedStudent = studentService.updateStudent(id,student);
-        if (updatedStudent == null) {
+        StudentResponseDto studentResp = studentService.updateStudent(id,studentReq);
+        if (studentResp == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(updatedStudent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentResp);
     }
 
 

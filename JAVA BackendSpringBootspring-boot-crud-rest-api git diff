@@ -1,0 +1,172 @@
+warning: in the working copy of 'src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/SpringBootCrudRestApiApplication.java', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/SpringBootCrudRestApiApplication.java b/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/SpringBootCrudRestApiApplication.java[m
+[1mindex 7c669c6..21d4e30 100644[m
+[1m--- a/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/SpringBootCrudRestApiApplication.java[m
+[1m+++ b/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/SpringBootCrudRestApiApplication.java[m
+[36m@@ -10,7 +10,7 @@[m [mpublic class SpringBootCrudRestApiApplication {[m
+ 	public static void main(String[] args) {[m
+ 		SpringApplication.run(SpringBootCrudRestApiApplication.class, args);[m
+ [m
+[31m-		System.out.println("Hello World");[m
+[32m+[m		[32mSystem.out.println("Application Started....");[m
+ 	}[m
+ [m
+ [m
+[1mdiff --git a/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/controller/StudentController.java b/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/controller/StudentController.java[m
+[1mindex 822e705..0da2ec9 100644[m
+[1m--- a/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/controller/StudentController.java[m
+[1m+++ b/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/controller/StudentController.java[m
+[36m@@ -1,5 +1,8 @@[m
+ package com.ateeburrahaman.spring_boot_crud_rest_api.controller;[m
+ [m
+[32m+[m[32mimport com.ateeburrahaman.spring_boot_crud_rest_api.dto.StudentResponseDto;[m
+[32m+[m[32mimport com.ateeburrahaman.spring_boot_crud_rest_api.dto.requestDto.CreateRequestDto;[m
+[32m+[m[32mimport com.ateeburrahaman.spring_boot_crud_rest_api.dto.requestDto.UpdateRequestDto;[m
+ import com.ateeburrahaman.spring_boot_crud_rest_api.entity.Student;[m
+ import com.ateeburrahaman.spring_boot_crud_rest_api.service.StudentService;[m
+ import org.springframework.http.HttpStatus;[m
+[36m@@ -18,9 +21,10 @@[m [mpublic class StudentController {[m
+     }[m
+ [m
+     @PostMapping("/create")[m
+[31m-    public ResponseEntity<Student> create(@RequestBody Student student) {[m
+[32m+[m[32m    public ResponseEntity<StudentResponseDto> create(@RequestBody CreateRequestDto studentReq) {[m
+ [m
+[31m-        Student savedStudent = studentService.createStudent(student);[m
+[32m+[m
+[32m+[m[32m        StudentResponseDto savedStudent = studentService.createStudent(studentReq);[m
+ [m
+         return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);[m
+     }[m
+[36m@@ -45,19 +49,19 @@[m [mpublic class StudentController {[m
+     }[m
+ [m
+     @GetMapping("/get")[m
+[31m-    public ResponseEntity<Student> getById(@RequestParam Integer id)[m
+[32m+[m[32m    public ResponseEntity<StudentResponseDto> getById(@RequestParam Integer id)[m
+     {[m
+[31m-        Student student = studentService.getById(id);[m
+[31m-        if (student == null) {[m
+[32m+[m[32m        StudentResponseDto studentResp = studentService.getById(id);[m
+[32m+[m[32m        if (studentResp == null) {[m
+             return ResponseEntity.notFound().build();[m
+         }[m
+[31m-        return ResponseEntity.ok(student);[m
+[32m+[m[32m        return ResponseEntity.ok(studentResp);[m
+     }[m
+ [m
+     @GetMapping("/getAll")[m
+[31m-    public ResponseEntity<List<Student>> getAll()[m
+[32m+[m[32m    public ResponseEntity<List<StudentResponseDto>> getAll()[m
+     {[m
+[31m-        List<Student> studentList = studentService.getAll();[m
+[32m+[m[32m        List<StudentResponseDto> studentList = studentService.getAll();[m
+         if (studentList == null) {[m
+             return ResponseEntity.notFound().build();[m
+         }[m
+[36m@@ -66,14 +70,14 @@[m [mpublic class StudentController {[m
+     }[m
+ [m
+     @PutMapping("/update")[m
+[31m-    public ResponseEntity<Student> update(@RequestParam Integer id,@RequestBody Student student) {[m
+[32m+[m[32m    public ResponseEntity<StudentResponseDto> update(@RequestParam Integer id,@RequestBody UpdateRequestDto studentReq) {[m
+ [m
+[31m-        Student updatedStudent = studentService.updateStudent(id,student);[m
+[31m-        if (updatedStudent == null) {[m
+[32m+[m[32m        StudentResponseDto studentResp = studentService.updateStudent(id,studentReq);[m
+[32m+[m[32m        if (studentResp == null) {[m
+             return ResponseEntity.notFound().build();[m
+         }[m
+ [m
+[31m-        return ResponseEntity.status(HttpStatus.CREATED).body(updatedStudent);[m
+[32m+[m[32m        return ResponseEntity.status(HttpStatus.CREATED).body(studentResp);[m
+     }[m
+ [m
+ [m
+[1mdiff --git a/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/entity/Student.java b/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/entity/Student.java[m
+[1mindex 08ac9c9..77bfc8d 100644[m
+[1m--- a/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/entity/Student.java[m
+[1m+++ b/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/entity/Student.java[m
+[36m@@ -5,6 +5,9 @@[m [mimport jakarta.persistence.GeneratedValue;[m
+ import jakarta.persistence.GenerationType;[m
+ import jakarta.persistence.Id;[m
+ [m
+[32m+[m[32mimport java.time.LocalDate;[m
+[32m+[m[32mimport java.time.LocalDateTime;[m
+[32m+[m
+ @Entity[m
+ public class Student {[m
+ [m
+[36m@@ -13,23 +16,51 @@[m [mpublic class Student {[m
+     private Integer id;[m
+     private String name;[m
+     private String email;[m
+[31m-    private int rollNo;[m
+[32m+[m[32m    private Integer rollNo;[m
+     private String gender;[m
+     private String branch;[m
+ [m
+     private Boolean deleted;[m
+[32m+[m[32m    private LocalDateTime createdAt;[m
+[32m+[m[32m    private LocalDateTime updatedAt;[m
+ [m
+[31m-    public Student(Integer id, String name, String email, int rollNo,[m
+[31m-                   String gender, String branch, Boolean deleted) {[m
+[31m-        this.id = id;[m
+[32m+[m[32m    public Student(Integer rollNo, String name,[m
+[32m+[m[32m                   Integer id, String email, String gender,[m
+[32m+[m[32m                   String branch, LocalDateTime createdAt,[m
+[32m+[m[32m                   Boolean deleted, LocalDateTime updatedAt) {[m
+[32m+[m[32m        this.rollNo = rollNo;[m
+         this.name = name;[m
+[32m+[m[32m        this.id = id;[m
+         this.email = email;[m
+[31m-        this.rollNo = rollNo;[m
+         this.gender = gender;[m
+         this.branch = branch;[m
+[32m+[m[32m        this.createdAt = createdAt;[m
+         this.deleted = deleted;[m
+[32m+[m[32m        this.updatedAt = updatedAt;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public LocalDateTime getCreatedAt() {[m
+[32m+[m[32m        return createdAt;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public void setCreatedAt(LocalDateTime createdAt) {[m
+[32m+[m[32m        this.createdAt = createdAt;[m
+     }[m
+ [m
+[32m+[m[32m    public Boolean getDeleted() {[m
+[32m+[m[32m        return deleted;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public LocalDateTime getUpdatedAt() {[m
+[32m+[m[32m        return updatedAt;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public void setUpdatedAt(LocalDateTime updatedAt) {[m
+[32m+[m[32m        this.updatedAt = updatedAt;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m
+     public Student() {[m
+ [m
+     }[m
+[36m@@ -59,11 +90,11 @@[m [mpublic class Student {[m
+         this.gender = gender;[m
+     }[m
+ [m
+[31m-    public int getRollNo() {[m
+[32m+[m[32m    public Integer getRollNo() {[m
+         return rollNo;[m
+     }[m
+ [m
+[31m-    public void setRollNo(int rollNo) {[m
+[32m+[m[32m    public void setRollNo(Integer rollNo) {[m
+         this.rollNo = rollNo;[m
+     }[m
+ [m
+[1mdiff --git a/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/service/StudentService.java b/src/main/java/com/ateeburrahaman/spring_boot_crud_rest_api/service/StudentService.java[m
+[1mindex 9b83ec9..
